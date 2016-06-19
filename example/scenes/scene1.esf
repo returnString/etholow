@@ -1,0 +1,17 @@
+# start
+_: "You've got a choice. You can either:"
+> "do this thing" => option1
+> "or this one" => option2
+
+# option1
+person: "Looks like you've chosen the first branch!"
+person: "Not really sure what to write here."
+=> end
+
+# option2
+person2: "So, you opted for the second branch."
+=> end
+
+# end
+_: "Looks like we're done here."
+=> scene.scene2
