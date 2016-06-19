@@ -1,7 +1,7 @@
 {
   "name": "etholow",
   "version": "0.1.0",
-  "description": "",
+  "description": "interactive fiction/text adventures in node.js",
   "scripts": {
     "test": "mocha && eslint ."
   },
@@ -9,7 +9,7 @@
     "name": "Ruan Pearce-Authers",
     "email": "ruanpa@outlook.com"
   },
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "bluebird": "^3.4.1",
     "co": "^4.6.0",
@@ -18,5 +18,12 @@
   "devDependencies": {
     "eslint": "^2.13.0",
     "mocha": "^2.5.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/returnString/etholow"
+  },
+  "bugs": {
+    "url": "https://github.com/returnString/etholow/issues"
   }
 }
