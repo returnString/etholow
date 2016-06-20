@@ -1,16 +1,11 @@
 {
   "name": "etholow",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "tools to create interactive fiction and text adventures",
   "scripts": {
     "test": "mocha && eslint ."
   },
   "main": "index.js",
-  "files": [
-    "index.js",
-    "lib/*.js",
-    "grammars/*.pegjs"
-  ],
   "author": {
     "name": "Ruan Pearce-Authers",
     "email": "ruanpa@outlook.com"
