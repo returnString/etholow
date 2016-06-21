@@ -1,0 +1,6 @@
+example/
+test/
+.vscode/
+.eslintrc
+.travis.yml
+*.tgz
