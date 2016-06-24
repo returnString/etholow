@@ -4,7 +4,8 @@
   "description": "tools to create interactive fiction and text adventures",
   "scripts": {
     "test": "mocha && eslint .",
-    "packageList": "bash -c \"tar -tf $(npm pack)\""
+    "packageList": "bash -c \"tar -tf $(npm pack)\"",
+    "start": "node example/"
   },
   "main": "index.js",
   "author": {
