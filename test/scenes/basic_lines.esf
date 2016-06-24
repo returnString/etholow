@@ -1,3 +1,4 @@
 # start
+"This is text without a speaker."
 _: "This is a test"
 => exit

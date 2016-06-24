@@ -31,10 +31,11 @@ BlockEntryN = entry:(Line) n? { return entry; }
 BlockEnd = ChoiceList / BlockEndN
 BlockEndN = entry:(Goto) n? { return entry; }
 
-Line = name:rawBasicString _ ":" _ line:string
+LinePrefix = name:rawBasicString _ ":" { return { name } }
+Line = prefix:LinePrefix? _ line:string
 {
 	return createNode('line', {
-		name,
+		name: prefix ? prefix.name : null,
 		line,
 	});
 }
