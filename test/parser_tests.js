@@ -13,21 +13,11 @@ const defaultCast = {
 };
 
 const testConfig = [
-	{
-		scene: 'basic_lines',
-	},
-	{
-		scene: 'block_not_found',
-		error: errorCode.blockNotFound,
-	},
-	{
-		scene: 'cast_not_found',
-		error: errorCode.castNotFound,
-	},
-	{
-		scene: 'scene_not_found',
-		error: errorCode.sceneNotFound,
-	},
+	{ scene: 'basic_lines' },
+	{ scene: 'block_not_found', error: errorCode.blockNotFound },
+	{ scene: 'cast_not_found', error: errorCode.castNotFound },
+	{ scene: 'scene_not_found', error: errorCode.sceneNotFound },
+	{ scene: 'syntax_error', error: errorCode.syntaxError },
 ];
 
 describe('Scene parser', function()
