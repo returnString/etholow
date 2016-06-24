@@ -54,11 +54,11 @@ describe('Scene parser', function()
 		it(testName, function()
 		{
 			const sceneData = fs.readFileSync(path.join(sceneDir, `${test.scene}${constants.exts.scene}`), 'utf8').replace(/\r\n/g, '\n');
-			
+
 			let parsedScenes, caughtErr;
 			try
 			{
-				parsedScenes = parser.parseGame({ scene1: sceneData }, defaultCast);
+				parsedScenes = parser.parseGame({ [test.scene]: sceneData }, defaultCast);
 			}
 			catch (err)
 			{
@@ -70,12 +70,13 @@ describe('Scene parser', function()
 				assert.notEqual(caughtErr, null);
 				assert(caughtErr instanceof ParserError);
 				assert.equal(caughtErr.code, test.error);
+				assert.equal(caughtErr.scene, test.scene);
 			}
 			else
 			{
 				assert.equal(caughtErr, null);
-				const { scene1 } = parsedScenes;
-				const recreatedText = parser.recreateText(scene1);
+				const scene = parsedScenes[test.scene];
+				const recreatedText = parser.recreateText(scene);
 				assert.equal(sceneData, recreatedText);
 			}
 		});
