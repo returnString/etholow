@@ -1,0 +1,9 @@
+# start
+> "option 1" => option1
+> "option 2" => option2
+
+# option1
+=> exit
+
+# option2
+=> exit

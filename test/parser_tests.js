@@ -14,6 +14,7 @@ const defaultCast = {
 
 const testConfig = [
 	{ scene: 'basic_lines' },
+	{ scene: 'basic_choices' },
 	{ scene: 'block_not_found', error: errorCode.blockNotFound },
 	{ scene: 'cast_not_found', error: errorCode.castNotFound },
 	{ scene: 'scene_not_found', error: errorCode.sceneNotFound },
@@ -32,6 +33,18 @@ describe('Scene parser', function()
 	});
 
 	const sceneDir = path.join(__dirname, 'scenes/');
+
+	it('should parse a basic cast', function()
+	{
+		const parsed = parser.parseCast(
+`_: "Narrator"
+person1: "Person One"
+`);
+		assert.deepEqual(parsed, {
+			_: 'Narrator',
+			person1: 'Person One',
+		});
+	});
 
 	for (const test of testConfig)
 	{
