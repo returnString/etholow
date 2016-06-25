@@ -3,6 +3,7 @@
 const { Game } = require('../');
 const path = require('path');
 const co = require('co');
+const assert = require('assert');
 
 const gameConfig = {
 	basic: {
@@ -45,6 +46,7 @@ describe('game player', function()
 					co(function*()
 					{
 						yield game.run();
+						assert.equal(readLineCalls, strategy.length);
 						return cb();
 					}).catch(cb);
 				});
