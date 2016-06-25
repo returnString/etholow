@@ -1,15 +1,15 @@
-Cast = cast:(CastMember n*)+
+Config = config:(ConfigEntry n*)+
 {
 	const ret = {};
-	for (const entry of cast)
+	for (const entry of config)
 	{
-		const castMember = entry[0];
-		ret[castMember.id] = castMember.name;
+		const configEntry = entry[0];
+		ret[configEntry.id] = configEntry.name;
 	}
 	return ret;
 }
 
-CastMember = id:rawBasicString _ ":" _ name:string { return { id, name }; }
+ConfigEntry = id:rawBasicString _ ":" _ name:string { return { id, name }; }
 
 string = '"' str:rawString '"' { return str; };
 rawString = chars:[\x20-\x21\x23-\x5B\x5D-\u10FFFF]+ { return chars.join(''); }

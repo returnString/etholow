@@ -23,33 +23,13 @@ const gameConfig = {
 	},
 };
 
-function loadGame(gameName, startingScene, options = {})
+function loadGame(gameName, options = {})
 {
-	return new Game(path.join(__dirname, 'games', gameName), startingScene, options);
+	return new Game(path.join(__dirname, 'games', gameName), options);
 }
 
 describe('game player', function()
 {
-	it('should throw an error when the starting scene does not exist', function(cb)
-	{
-		const game = loadGame('basic', 'nonexistent_scene');
-		co(function*()
-		{
-			let caughtErr;
-			try
-			{
-				yield game.run();
-			}
-			catch (err)
-			{
-				caughtErr = err;
-			}
-
-			assert.notEqual(caughtErr, null);
-			return cb();
-		}).catch(cb);
-	});
-
 	for (const gameName in gameConfig)
 	{
 		const gameData = gameConfig[gameName];
@@ -62,7 +42,7 @@ describe('game player', function()
 				it(`using the '${strategyName} strategy'`, function(cb)
 				{
 					let readLineCalls = 0;
-					const game = loadGame(gameName, gameData.startingScene, {
+					const game = loadGame(gameName, {
 						readLineCallback: () => strategy[readLineCalls++],
 						lineDelay: 0,
 						suppressOutput: true,

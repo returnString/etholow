@@ -45,7 +45,7 @@ describe('Scene parser', function()
 
 			it('should parse a basic cast', function()
 			{
-				const parsed = parser.parseCast(
+				const parsed = parser.parseConfig(
 `_: "Narrator"
 person1: "Person One"
 `);
