@@ -5,7 +5,6 @@ const fs = require('fs');
 const path = require('path');
 const assert = require('assert');
 const { Parser, ParserError, errorCode, constants } = require('../');
-const parser = new Parser();
 
 const defaultCast = {
 	_: 'Narrator',
@@ -30,79 +29,88 @@ function loadSceneData(scene)
 
 describe('Scene parser', function()
 {
-	before(function(cb)
+	function runTests(name, parserOptions)
 	{
-		co(function*()
+		const parser = new Parser(parserOptions);
+		describe(`parser options '${name}'`, function()
 		{
-			yield parser.init();
-			return cb();
-		}).catch(cb);
-	});
+			before(function(cb)
+			{
+				co(function*()
+				{
+					yield parser.init();
+					return cb();
+				}).catch(cb);
+			});
 
-
-	it('should parse a basic cast', function()
-	{
-		const parsed = parser.parseCast(
+			it('should parse a basic cast', function()
+			{
+				const parsed = parser.parseCast(
 `_: "Narrator"
 person1: "Person One"
 `);
-		assert.deepEqual(parsed, {
-			_: 'Narrator',
-			person1: 'Person One',
-		});
-	});
+				assert.deepEqual(parsed, {
+					_: 'Narrator',
+					person1: 'Person One',
+				});
+			});
 
-	it('should throw an error when no cast is provided', function()
-	{
-		assert.throws(() => parser.parseGame([], null));
-	});
+			it('should throw an error when no cast is provided', function()
+			{
+				assert.throws(() => parser.parseGame([], null));
+			});
 
-	for (const test of testConfig)
-	{
-		let testName = `should process scene "${test.scene}"`;
-		if (test.error)
-		{
-			testName += ` with error ${test.error}`;
-		}
+			for (const test of testConfig)
+			{
+				let testName = `should process scene "${test.scene}"`;
+				if (test.error)
+				{
+					testName += ` with error ${test.error}`;
+				}
 
-		it(testName, function()
-		{
-			let sceneList = [ test.scene ];
-			if (test.extraScenes)
-			{
-				sceneList = sceneList.concat(test.extraScenes);
-			}
+				it(testName, function()
+				{
+					let sceneList = [ test.scene ];
+					if (test.extraScenes)
+					{
+						sceneList = sceneList.concat(test.extraScenes);
+					}
 
-			const scenes = {};
-			for (const scene of sceneList)
-			{
-				scenes[scene] = loadSceneData(scene);
-			}
+					const scenes = {};
+					for (const scene of sceneList)
+					{
+						scenes[scene] = loadSceneData(scene);
+					}
 
-			let parsedScenes, caughtErr;
-			try
-			{
-				parsedScenes = parser.parseGame(scenes, defaultCast);
-			}
-			catch (err)
-			{
-				caughtErr = err;
-			}
+					let parsedScenes, caughtErr;
+					try
+					{
+						parsedScenes = parser.parseGame(scenes, defaultCast);
+					}
+					catch (err)
+					{
+						caughtErr = err;
+					}
 
-			if (test.error)
-			{
-				assert.notEqual(caughtErr, null);
-				assert(caughtErr instanceof ParserError);
-				assert.equal(caughtErr.code, test.error);
-				assert.equal(caughtErr.scene, test.scene);
-			}
-			else
-			{
-				assert.equal(caughtErr, null);
-				const scene = parsedScenes[test.scene];
-				const recreatedText = parser.recreateText(scene);
-				assert.equal(scenes[test.scene], recreatedText);
+					if (test.error)
+					{
+						assert.notEqual(caughtErr, null);
+						assert(caughtErr instanceof ParserError);
+						assert.equal(caughtErr.code, test.error);
+						assert.equal(caughtErr.scene, test.scene);
+					}
+					else
+					{
+						assert.equal(caughtErr, null);
+						const scene = parsedScenes[test.scene];
+						const recreatedText = parser.recreateText(scene);
+						assert.equal(scenes[test.scene], recreatedText);
+					}
+				});
 			}
 		});
 	}
+
+	runTests('no options specified', {});
+	runTests('stripped debug info', { stripDebugInfo: true });
 });
