@@ -15,11 +15,18 @@ const defaultCast = {
 const testConfig = [
 	{ scene: 'basic_lines' },
 	{ scene: 'basic_choices' },
+	{ scene: 'goto_scene', extraScenes: [ 'blank_scene' ] },
 	{ scene: 'block_not_found', error: errorCode.blockNotFound },
 	{ scene: 'cast_not_found', error: errorCode.castNotFound },
 	{ scene: 'scene_not_found', error: errorCode.sceneNotFound },
 	{ scene: 'syntax_error', error: errorCode.syntaxError },
 ];
+
+const sceneDir = path.join(__dirname, 'scenes/');
+function loadSceneData(scene)
+{
+	return fs.readFileSync(path.join(sceneDir, `${scene}${constants.exts.scene}`), 'utf8').replace(/\r\n/g, '\n');
+}
 
 describe('Scene parser', function()
 {
@@ -32,7 +39,6 @@ describe('Scene parser', function()
 		}).catch(cb);
 	});
 
-	const sceneDir = path.join(__dirname, 'scenes/');
 
 	it('should parse a basic cast', function()
 	{
@@ -61,12 +67,22 @@ person1: "Person One"
 
 		it(testName, function()
 		{
-			const sceneData = fs.readFileSync(path.join(sceneDir, `${test.scene}${constants.exts.scene}`), 'utf8').replace(/\r\n/g, '\n');
+			let sceneList = [ test.scene ];
+			if (test.extraScenes)
+			{
+				sceneList = sceneList.concat(test.extraScenes);
+			}
+
+			const scenes = {};
+			for (const scene of sceneList)
+			{
+				scenes[scene] = loadSceneData(scene);
+			}
 
 			let parsedScenes, caughtErr;
 			try
 			{
-				parsedScenes = parser.parseGame({ [test.scene]: sceneData }, defaultCast);
+				parsedScenes = parser.parseGame(scenes, defaultCast);
 			}
 			catch (err)
 			{
@@ -85,7 +101,7 @@ person1: "Person One"
 				assert.equal(caughtErr, null);
 				const scene = parsedScenes[test.scene];
 				const recreatedText = parser.recreateText(scene);
-				assert.equal(sceneData, recreatedText);
+				assert.equal(scenes[test.scene], recreatedText);
 			}
 		});
 	}
