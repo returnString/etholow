@@ -21,7 +21,7 @@ const testConfig = [
 	{ scene: 'syntax_error', error: errorCode.syntaxError },
 ];
 
-const sceneDir = path.join(__dirname, 'scenes/');
+const sceneDir = path.join(__dirname, 'scenes');
 function loadSceneData(scene)
 {
 	return fs.readFileSync(path.join(sceneDir, `${scene}${constants.exts.scene}`), 'utf8').replace(/\r\n/g, '\n');
