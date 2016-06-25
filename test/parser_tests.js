@@ -46,6 +46,11 @@ person1: "Person One"
 		});
 	});
 
+	it('should throw an error when no cast is provided', function()
+	{
+		assert.throws(() => parser.parseGame([], null));
+	});
+
 	for (const test of testConfig)
 	{
 		let testName = `should process scene "${test.scene}"`;
