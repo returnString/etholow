@@ -14,6 +14,10 @@ const gameConfig = {
 			option2: [
 				2,
 			],
+			invalid_option: [
+				3,
+				1,
+			],
 		},
 	},
 };
