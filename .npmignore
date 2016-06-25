@@ -1,6 +1,7 @@
 example/
 test/
 .vscode/
+coverage/
 .eslintrc
 .travis.yml
 *.tgz
