@@ -7,7 +7,6 @@ const assert = require('assert');
 
 const gameConfig = {
 	basic: {
-		startingScene: 'scene1',
 		strategies: {
 			option1: [
 				1,
