@@ -7,5 +7,6 @@ const { Game } = require('../');
 co(function*()
 {
 	const game = new Game(process.argv[2]);
+	yield game.load();
 	yield game.run();
 }).catch(err => console.error(err.stack));

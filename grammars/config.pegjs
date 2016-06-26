@@ -1,4 +1,4 @@
-Config = config:(ConfigEntry n*)+
+Config = config:(ConfigEntry n*)*
 {
 	const ret = {};
 	for (const entry of config)

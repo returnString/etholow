@@ -1,8 +1,8 @@
 'use strict';
 
-const { Game } = require('../');
+require('./test_setup')();
+const { Game, constants, EtholowError } = require('../');
 const path = require('path');
-const co = require('co');
 const assert = require('assert');
 
 const gameConfig = {
@@ -21,6 +21,12 @@ const gameConfig = {
 			],
 		},
 	},
+	no_starting_scene: {
+		expectedError: constants.error.startingSceneNotFound,
+	},
+	invalid_starting_scene: {
+		expectedError: constants.error.startingSceneNotFound,
+	},
 };
 
 function loadGame(gameName, options = {})
@@ -35,26 +41,47 @@ describe('game player', function()
 		const gameData = gameConfig[gameName];
 		describe(`playing '${gameName}'`, function()
 		{
-			for (const strategyName in gameData.strategies)
+			if (gameData.expectedError)
 			{
-				const strategy = gameData.strategies[strategyName];
-
-				it(`using the '${strategyName} strategy'`, function(cb)
+				it(`should throw error ${gameData.expectedError}`, function*()
 				{
-					let readLineCalls = 0;
-					const game = loadGame(gameName, {
-						readLineCallback: () => strategy[readLineCalls++],
-						lineDelay: 0,
-						suppressOutput: true,
-					});
-
-					co(function*()
+					let caughtErr;
+					const game = loadGame(gameName);
+					try
 					{
+						yield game.load();
+						yield game.run();
+					}
+					catch (err)
+					{
+						caughtErr = err;
+					}
+
+					assert.notEqual(caughtErr, null);
+					assert(caughtErr instanceof EtholowError, `Got error of type ${typeof caughtErr}: ${caughtErr.message}`);
+					assert.equal(caughtErr.code, gameData.expectedError);
+				});
+			}
+			else
+			{
+				for (const strategyName in gameData.strategies)
+				{
+					const strategy = gameData.strategies[strategyName];
+
+					it(`using the '${strategyName} strategy'`, function*()
+					{
+						let readLineCalls = 0;
+						const game = loadGame(gameName, {
+							readLineCallback: () => strategy[readLineCalls++],
+							lineDelay: 0,
+							suppressOutput: true,
+						});
+
+						yield game.load();
 						yield game.run();
 						assert.equal(readLineCalls, strategy.length);
-						return cb();
-					}).catch(cb);
-				});
+					});
+				}
 			}
 		});
 	}

@@ -1,10 +1,10 @@
 'use strict';
 
-const co = require('co');
+require('./test_setup')();
 const fs = require('fs');
 const path = require('path');
 const assert = require('assert');
-const { Parser, ParserError, errorCode, constants } = require('../');
+const { Parser, EtholowError, constants } = require('../');
 
 const defaultCast = {
 	_: 'Narrator',
@@ -15,10 +15,10 @@ const testConfig = [
 	{ scene: 'basic_lines' },
 	{ scene: 'basic_choices' },
 	{ scene: 'goto_scene', extraScenes: [ 'blank_scene' ] },
-	{ scene: 'block_not_found', error: errorCode.blockNotFound },
-	{ scene: 'cast_not_found', error: errorCode.castNotFound },
-	{ scene: 'scene_not_found', error: errorCode.sceneNotFound },
-	{ scene: 'syntax_error', error: errorCode.syntaxError },
+	{ scene: 'block_not_found', error: constants.error.blockNotFound },
+	{ scene: 'cast_not_found', error: constants.error.castNotFound },
+	{ scene: 'scene_not_found', error: constants.error.sceneNotFound },
+	{ scene: 'syntax_error', error: constants.error.syntaxError },
 ];
 
 const sceneDir = path.join(__dirname, 'scenes');
@@ -34,13 +34,9 @@ describe('Scene parser', function()
 		const parser = new Parser(parserOptions);
 		describe(`parser options '${name}'`, function()
 		{
-			before(function(cb)
+			before(function*()
 			{
-				co(function*()
-				{
-					yield parser.init();
-					return cb();
-				}).catch(cb);
+				yield parser.init();
 			});
 
 			it('should parse a basic cast', function()
@@ -57,7 +53,7 @@ person1: "Person One"
 
 			it('should throw an error when no cast is provided', function()
 			{
-				assert.throws(() => parser.parseGame([], null));
+				assert.throws(() => parser.parseGame([], null), err => err instanceof EtholowError && err.code === constants.error.castNotFound);
 			});
 
 			for (const test of testConfig)
@@ -95,7 +91,7 @@ person1: "Person One"
 					if (test.error)
 					{
 						assert.notEqual(caughtErr, null);
-						assert(caughtErr instanceof ParserError);
+						assert(caughtErr instanceof EtholowError);
 						assert.equal(caughtErr.code, test.error);
 						assert.equal(caughtErr.scene, test.scene);
 					}

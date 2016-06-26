@@ -10,9 +10,8 @@ for (const module of [ require('fs') ])
 module.exports = {
 	Player: require('./lib/player'),
 	Parser: require('./lib/parser'),
-	ParserError: require('./lib/parser_error'),
+	EtholowError: require('./lib/error'),
 	Game: require('./lib/game'),
 
-	errorCode: require('./lib/error_code'),
 	constants: require('./lib/constants'),
 };
