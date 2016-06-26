@@ -2,13 +2,16 @@
   "name": "etholow",
   "version": "0.1.3",
   "description": "tools to create interactive fiction and text adventures",
+  "bin": {
+    "etholow": "./bin/etholow.js"
+  },
   "scripts": {
     "mocha": "istanbul cover _mocha",
     "eslint": "eslint . --ignore-path .gitignore",
     "view_coverage": "open coverage/lcov-report/index.html",
     "test": "npm run mocha && npm run eslint",
     "packageList": "bash -c \"tar -tf $(npm pack)\"",
-    "start": "node example/"
+    "start": "etholow test/games/basic"
   },
   "main": "index.js",
   "author": {
