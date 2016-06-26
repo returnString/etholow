@@ -28,28 +28,37 @@ const gameConfig = {
 	},
 };
 
-function loadGame(gameName, options = {})
-{
-	return new Game(path.join(__dirname, 'games', gameName), options);
-}
-
 describe('game player', function()
 {
-	for (const gameName in gameConfig)
+	function testGame(gameName)
 	{
 		const gameData = gameConfig[gameName];
 		describe(`playing '${gameName}'`, function()
 		{
+			const gameDir = path.join(__dirname, 'games', gameName);
+			let rawGame, compiledGame;
+			before(function*()
+			{
+				rawGame = new Game();
+				compiledGame = new Game();
+
+				if (!gameData.expectedError)
+				{
+					yield rawGame.loadDir(gameDir);
+					yield rawGame.saveJson(path.join(gameDir, 'compiled.json'));
+					yield compiledGame.loadJson(path.join(gameDir, 'compiled.json'));
+				}
+			});
+
 			if (gameData.expectedError)
 			{
 				it(`should throw error ${gameData.expectedError}`, function*()
 				{
 					let caughtErr;
-					const game = loadGame(gameName);
 					try
 					{
-						yield game.load();
-						yield game.run();
+						yield rawGame.loadDir(gameDir);
+						yield rawGame.run();
 					}
 					catch (err)
 					{
@@ -67,21 +76,36 @@ describe('game player', function()
 				{
 					const strategy = gameData.strategies[strategyName];
 
-					it(`using the '${strategyName} strategy'`, function*()
+					const runStrategy = function*(game)
 					{
 						let readLineCalls = 0;
-						const game = loadGame(gameName, {
+						yield game.run({
 							readLineCallback: () => strategy[readLineCalls++],
 							lineDelay: 0,
 							suppressOutput: true,
 						});
-
-						yield game.load();
-						yield game.run();
 						assert.equal(readLineCalls, strategy.length);
+					};
+
+					describe(`using the '${strategyName} strategy`, function()
+					{
+						it('from the game dir', function*()
+						{
+							yield runStrategy(rawGame);
+						});
+
+						it('from the compiled json', function*()
+						{
+							yield runStrategy(compiledGame);
+						});
 					});
 				}
 			}
 		});
+	}
+
+	for (const gameName in gameConfig)
+	{
+		testGame(gameName);
 	}
 });

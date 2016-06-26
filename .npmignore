@@ -4,3 +4,4 @@ coverage/
 .eslintrc
 .travis.yml
 *.tgz
+compiled.json
