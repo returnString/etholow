@@ -7,6 +7,7 @@
 		"node_modules/": true,
 		"coverage/": true,
 		"**/*.log": true,
-		"**/*.tgz": true
+		"**/*.tgz": true,
+		"**/compiled.json": true
 	}
 }
