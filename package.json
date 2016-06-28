@@ -12,7 +12,7 @@
     "upload_coverage": "cat coverage/lcov.info | coveralls",
     "test": "npm run mocha && npm run eslint",
     "packageList": "bash -c \"tar -tf $(npm pack)\"",
-    "start": "etholow test/games/basic"
+    "start": "etholow play test/games/basic"
   },
   "main": "index.js",
   "author": {
