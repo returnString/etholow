@@ -10,7 +10,12 @@ function *runStrategy(game, strategy, playerOptions)
 	let readLineCalls = 0;
 
 	const options = {
-		readLineCallback: () => strategy[readLineCalls++],
+		readLineCallback: () =>
+		{
+			const answer = strategy[readLineCalls++];
+			assert(answer, `No answer provided for attempt ${readLineCalls}`);
+			return answer;
+		},
 		lineDelay: 0,
 		suppressOutput: true,
 	};

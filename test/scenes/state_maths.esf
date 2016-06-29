@@ -1,0 +1,19 @@
+# start
+{
+	scene.count = 0
+}
+=> loop
+
+# loop
+> "go again" => increment
+> "option" => exit ? scene.count == 1
+> "option" => exit ? scene.count == 2
+> "option" => exit ? scene.count == 3
+> "option" => exit ? scene.count == 4
+> "option" => exit ? scene.count == 5
+
+# increment
+{
+	scene.count = scene.count + 1
+}
+=> loop

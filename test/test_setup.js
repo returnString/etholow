@@ -29,6 +29,18 @@ module.exports = () =>
 					option2_fail: [ 2, 1, 2 ],
 				},
 			},
+			{
+				scene: 'state_maths',
+				useAbsoluteAnswers: true,
+				strategies: {
+					fail5: [ 6, 5, 4, 3, 2, 1, 2 ],
+					succeed1: [ 1, 2 ],
+					succeed2: [ 1, 1, 3 ],
+					succeed3: [ 1, 1, 1, 4 ],
+					succeed4: [ 1, 1, 1, 1, 5 ],
+					succeed5: [ 1, 1, 1, 1, 1, 6 ],
+				},
+			},
 			{ scene: 'goto_scene', extraScenes: [ 'blank_scene' ] },
 			{ scene: 'block_not_found', error: constants.error.blockNotFound },
 			{ scene: 'cast_not_found', error: constants.error.castNotFound },

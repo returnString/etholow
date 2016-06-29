@@ -10,6 +10,11 @@
 			},
 		};
 	}
+
+	function binaryOpData(first, rest)
+	{
+		return rest.reduce((memo, curr) => { return { op: curr[0], lhs: memo, rhs: curr[2] }; }, first)
+	}
 }
 
 File = list:(Block n*)+
@@ -89,12 +94,31 @@ StateProperty = first:rawBasicString remaining:("." rawBasicString)+
 	});
 }
 
-StateLiteral = value:(string / bool)
+StateLiteral = value:(string / bool / integer)
 {
 	return createNode('stateLiteral', {
 		value,
 	});
 }
+
+StateBinaryAdd = first:StateBinaryMul _ rest:(("+" / "-") _ StateBinaryMul)+
+{
+	return createNode('stateBinaryOp', binaryOpData(first, rest));
+} / StateBinaryMul
+
+StateBinaryMul = first:StateBinaryEq _ rest:(("*" / "/") _ StateBinaryEq)+
+{
+	return createNode('stateBinaryOp', binaryOpData(first, rest));
+} / StateBinaryEq
+
+StateBinaryEq = first:StateBinaryPrimary _ rest:(("==") _ StateBinaryPrimary)+
+{
+	return createNode('stateBinaryOp', binaryOpData(first, rest));
+} / StateBinaryPrimary
+
+StateBinaryPrimary = StateLiteral
+	/ StateProperty
+	/ "(" _ expr:StateBinaryAdd _ ")" { return expr; }
 
 StateAssignment = prop:StateProperty _ "=" _ rhs:StateExpression
 {
@@ -104,7 +128,7 @@ StateAssignment = prop:StateProperty _ "=" _ rhs:StateExpression
 	});
 }
 
-StateExpression = StateAssignment / StateProperty / StateLiteral 
+StateExpression = StateAssignment / StateBinaryAdd / StateLiteral / StateProperty
 StateBlock = "{" _ n? _ exprs:(_ StateExpression n?)* _ "}"
 {
 	return createNode('stateBlock', {
@@ -112,6 +136,7 @@ StateBlock = "{" _ n? _ exprs:(_ StateExpression n?)* _ "}"
 	});
 }
 
+integer = value:[0-9]+ { return parseInt(value.join(''), 10); }
 boolTrue = "true" { return true; }
 boolFalse = "false" { return false; }
 bool = boolTrue / boolFalse
