@@ -1,6 +1,6 @@
 'use strict';
 
-require('./test_setup')();
+const config = require('./test_setup')();
 const fs = require('fs');
 const path = require('path');
 const assert = require('assert');
@@ -10,16 +10,6 @@ const defaultCast = {
 	_: 'Narrator',
 	person: 'Person',
 };
-
-const testConfig = [
-	{ scene: 'basic_lines' },
-	{ scene: 'basic_choices' },
-	{ scene: 'goto_scene', extraScenes: [ 'blank_scene' ] },
-	{ scene: 'block_not_found', error: constants.error.blockNotFound },
-	{ scene: 'cast_not_found', error: constants.error.castNotFound },
-	{ scene: 'scene_not_found', error: constants.error.sceneNotFound },
-	{ scene: 'syntax_error', error: constants.error.syntaxError },
-];
 
 const sceneDir = path.join(__dirname, 'scenes');
 function loadSceneData(scene)
@@ -80,7 +70,7 @@ option2: [ "value1", "value2", [ "value3", [ "value4" ] ] ]
 				assert.throws(() => parser.parseGame([], null), err => err instanceof EtholowError && err.code === constants.error.castNotFound);
 			});
 
-			for (const test of testConfig)
+			for (const test of config.scenes)
 			{
 				let testName = `should process scene "${test.scene}"`;
 				if (test.error)
@@ -121,7 +111,7 @@ option2: [ "value1", "value2", [ "value3", [ "value4" ] ] ]
 					}
 					else
 					{
-						assert.equal(caughtErr, null);
+						assert.ifError(caughtErr);
 						const scene = parsedScenes[test.scene];
 						const recreatedText = parser.recreateText(scene);
 						assert.equal(scenes[test.scene], recreatedText);

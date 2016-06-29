@@ -1,0 +1,19 @@
+# start
+> "option 1" => option1
+> "option 2" => option2
+
+# option1
+{
+	scene.option1 = true
+}
+=> usevariable
+
+# option2
+{
+	scene.option2 = true
+}
+=> usevariable
+
+# usevariable
+> "because of option 1" => exit ? scene.option1
+> "because of option 2" => exit ? scene.option2

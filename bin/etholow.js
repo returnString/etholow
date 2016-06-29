@@ -13,13 +13,20 @@ function *loadGame(pathArgIndex)
 	if (!target) throw new Error('No game path provided');
 	const parsed = path.parse(target);
 	const game = new Game();
-	if (parsed.ext === '.json')
+
+	switch (parsed.ext)
 	{
+		case '.json':
 		yield game.loadJson(target);
-	}
-	else
-	{
+		break;
+
+		case '.esf':
+		yield game.loadScene(target);
+		break;
+		
+		default:
 		yield game.loadDir(target);
+		break;
 	}
 	return game;
 }

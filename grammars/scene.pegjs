@@ -26,7 +26,7 @@ Block = "#" _ id:rawBasicString _ n entries:BlockEntry* end:BlockEnd
 }
 
 BlockEntry = BlockEntryN
-BlockEntryN = entry:(Line) n? { return entry; }
+BlockEntryN = entry:(Line / StateBlock) n? { return entry; }
 
 BlockEnd = ChoiceList / BlockEndN
 BlockEndN = entry:(Goto) n? { return entry; }
@@ -40,18 +40,26 @@ Line = prefix:LinePrefix? _ line:string
 	});
 }
 
-ChoiceList = list:(Choice n)+
+ChoiceList = list:(Choice n?)+
 {
 	return createNode('choiceList', {
 		choices: list.map(e => e[0]),
 	});
 }
 
-Choice = ">" _ desc:string _ target:Goto
+ChoiceConditional = "?" _ expr:StateExpression
+{
+	return createNode('choiceConditional', {
+		expr,
+	});
+}
+
+Choice = ">" _ desc:string _ target:Goto _ cond:ChoiceConditional?
 {
 	return createNode('choice', {
 		desc,
 		target,
+		cond,
 	});
 }
 
@@ -74,6 +82,39 @@ GotoScene = "scene." sceneID:rawBasicString
 	});
 }
 
+StateProperty = first:rawBasicString remaining:("." rawBasicString)+
+{
+	return createNode('stateProperty', {
+		identChain: [ first, ...remaining.map(r => r[1]) ],
+	});
+}
+
+StateLiteral = value:(string / bool)
+{
+	return createNode('stateLiteral', {
+		value,
+	});
+}
+
+StateAssignment = prop:StateProperty _ "=" _ rhs:StateExpression
+{
+	return createNode('stateAssignment', {
+		prop,
+		rhs,
+	});
+}
+
+StateExpression = StateAssignment / StateProperty / StateLiteral 
+StateBlock = "{" _ n? _ exprs:(_ StateExpression n?)* _ "}"
+{
+	return createNode('stateBlock', {
+		exprs: exprs.map(e => e[1]),
+	});
+}
+
+boolTrue = "true" { return true; }
+boolFalse = "false" { return false; }
+bool = boolTrue / boolFalse
 string = '"' str:rawString '"' { return str; };
 rawString = chars:[\x20-\x21\x23-\x5B\x5D-\u10FFFF]+ { return chars.join(''); }
 rawBasicString = chars:[a-z_\-0-9]i+ { return chars.join(''); }

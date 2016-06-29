@@ -1,38 +1,34 @@
 'use strict';
 
-require('./test_setup')();
+const config = require('./test_setup')();
 const { Game, constants, EtholowError } = require('../');
 const path = require('path');
 const assert = require('assert');
 
-const gameConfig = {
-	basic: {
-		strategies: {
-			option1: [
-				1,
-			],
-			option2: [
-				2,
-			],
-			invalid_option: [
-				3,
-				1,
-			],
-		},
-	},
-	no_starting_scene: {
-		expectedError: constants.error.startingSceneNotFound,
-	},
-	invalid_starting_scene: {
-		expectedError: constants.error.startingSceneNotFound,
-	},
-};
+function *runStrategy(game, strategy, playerOptions)
+{
+	let readLineCalls = 0;
+
+	const options = {
+		readLineCallback: () => strategy[readLineCalls++],
+		lineDelay: 0,
+		suppressOutput: true,
+	};
+
+	for (const prop in playerOptions)
+	{
+		options[prop] = playerOptions[prop];
+	}
+
+	yield game.run(options);
+	assert.equal(readLineCalls, strategy.length);
+}
 
 describe('game player', function()
 {
 	function testGame(gameName)
 	{
-		const gameData = gameConfig[gameName];
+		const gameData = config.games[gameName];
 		describe(`playing '${gameName}'`, function()
 		{
 			const gameDir = path.join(__dirname, 'games', gameName);
@@ -76,27 +72,16 @@ describe('game player', function()
 				{
 					const strategy = gameData.strategies[strategyName];
 
-					const runStrategy = function*(game)
-					{
-						let readLineCalls = 0;
-						yield game.run({
-							readLineCallback: () => strategy[readLineCalls++],
-							lineDelay: 0,
-							suppressOutput: true,
-						});
-						assert.equal(readLineCalls, strategy.length);
-					};
-
 					describe(`using the '${strategyName} strategy`, function()
 					{
 						it('from the game dir', function*()
 						{
-							yield runStrategy(rawGame);
+							yield runStrategy(rawGame, strategy);
 						});
 
 						it('from the compiled json', function*()
 						{
-							yield runStrategy(compiledGame);
+							yield runStrategy(compiledGame, strategy);
 						});
 					});
 				}
@@ -104,8 +89,31 @@ describe('game player', function()
 		});
 	}
 
-	for (const gameName in gameConfig)
+	for (const gameName in config.games)
 	{
 		testGame(gameName);
+	}
+
+	for (const test of config.scenes.filter(s => !s.error))
+	{
+		describe(`should process the standalone scene '${test.scene}'`, function()
+		{
+			let game;
+			before(function*()
+			{
+				game = new Game();
+				const scenePath = path.join(__dirname, 'scenes', `${test.scene}${constants.exts.scene}`);
+				yield game.loadScene(scenePath);
+			});
+
+			for (const strategyName in test.strategies)
+			{
+				const strategy = test.strategies[strategyName];
+				it(`using the '${strategyName}' strategy`, function*()
+				{
+					yield runStrategy(game, strategy, { useAbsoluteAnswers: test.useAbsoluteAnswers });
+				});
+			}
+		});
 	}
 });
