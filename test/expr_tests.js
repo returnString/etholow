@@ -88,6 +88,27 @@ const testData = {
 	'30 - 10': {
 		value: 20,
 	},
+	'!false': {
+		value: true,
+	},
+	'!true': {
+		value: false,
+	},
+	'!scene.undefined': {
+		value: true,
+	},
+	'!scene.defined': {
+		initialSceneState: {
+			defined: true,
+		},
+		value: false,
+	},
+	'scene.defined == !scene.defined': {
+		initialSceneState: {
+			defined: true,
+		},
+		value: false,
+	},
 };
 
 function nodeAssert(actual, expected, skipAssert = false)

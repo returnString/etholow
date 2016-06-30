@@ -4,14 +4,14 @@
 
 # option1
 {
-	scene.option1 = true
+	scene.option1 = !false
 	scene.option2 = false
 }
 => usevariable
 
 # option2
 {
-	scene.option1 = false
+	scene.option1 = !true
 	scene.option2 = true
 }
 => usevariable

@@ -111,9 +111,17 @@ StateBinaryMul = first:StateBinaryEq _ rest:(("*" / "/") _ StateBinaryEq)+
 	return createNode('stateBinaryOp', binaryOpData(first, rest));
 } / StateBinaryEq
 
-StateBinaryEq = first:StateBinaryPrimary _ rest:(("==") _ StateBinaryPrimary)+
+StateBinaryEq = first:StateUnaryOp _ rest:(("==") _ StateUnaryOp)+
 {
 	return createNode('stateBinaryOp', binaryOpData(first, rest));
+} / StateUnaryOp
+
+StateUnaryOp = op:"!" _ arg:StateBinaryPrimary
+{
+	return createNode('stateUnaryOp', {
+		op,
+		arg,
+	});
 } / StateBinaryPrimary
 
 StateBinaryPrimary = StateLiteral
