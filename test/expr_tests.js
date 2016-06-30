@@ -4,61 +4,89 @@ require('./test_setup')();
 const pegjs = require('pegjs');
 const fs = require('fs');
 const assert = require('assert');
+const { Player } = require('../');
 
 const testData = {
 	'1 + 1': {
-		type: 'stateBinaryOp',
-		data: {
-			op: '+',
-			lhs: {
-				type: 'stateLiteral',
-				data: {
-					value: 1,
+		value: 2,
+		ast: {
+			type: 'stateBinaryOp',
+			data: {
+				op: '+',
+				lhs: {
+					type: 'stateLiteral',
+					data: {
+						value: 1,
+					},
 				},
-			},
-			rhs: {
-				type: 'stateLiteral',
-				data: {
-					value: 1,
+				rhs: {
+					type: 'stateLiteral',
+					data: {
+						value: 1,
+					},
 				},
 			},
 		},
 	},
 	'scene.value + 1': {
-		type: 'stateBinaryOp',
-		data: {
-			op: '+',
-			lhs: {
-				type: 'stateProperty',
-				data: {
-					identChain: [ 'scene', 'value' ],
+		value: 1,
+		initialSceneState: {
+			value: 0,
+		},
+		ast: {
+			type: 'stateBinaryOp',
+			data: {
+				op: '+',
+				lhs: {
+					type: 'stateProperty',
+					data: {
+						identChain: [ 'scene', 'value' ],
+					},
 				},
-			},
-			rhs: {
-				type: 'stateLiteral',
-				data: {
-					value: 1,
+				rhs: {
+					type: 'stateLiteral',
+					data: {
+						value: 1,
+					},
 				},
 			},
 		},
 	},
 	'scene.value == 1': {
-		type: 'stateBinaryOp',
-		data: {
-			op: '==',
-			lhs: {
-				type: 'stateProperty',
-				data: {
-					identChain: [ 'scene', 'value' ],
+		value: false,
+		initialSceneState: {
+			value: 0,
+		},
+		ast: {
+			type: 'stateBinaryOp',
+			data: {
+				op: '==',
+				lhs: {
+					type: 'stateProperty',
+					data: {
+						identChain: [ 'scene', 'value' ],
+					},
 				},
-			},
-			rhs: {
-				type: 'stateLiteral',
-				data: {
-					value: 1,
+				rhs: {
+					type: 'stateLiteral',
+					data: {
+						value: 1,
+					},
 				},
 			},
 		},
+	},
+	'2 * 3 + 4': {
+		value: 10,
+	},
+	'2 * (3 + 4)': {
+		value: 14,
+	},
+	'10 / 5': {
+		value: 2,
+	},
+	'30 - 10': {
+		value: 20,
 	},
 };
 
@@ -82,24 +110,44 @@ function nodeAssert(actual, expected, skipAssert = false)
 
 describe('expression parsing', function()
 {
-	let parser;
+	const exprSceneID = 'exprScene';
+	let parser, player = new Player({ [exprSceneID]: {} }, exprSceneID, {});
 	before(function*()
 	{
 		const grammarData = yield fs.readFileAsync(`${__dirname}/../grammars/scene.pegjs`, 'utf8');
 		parser = pegjs.buildParser(grammarData, { allowedStartRules: [ 'StateExpression' ] });
 	});
 
-	function testExpr(expr)
+	function *testExpr(expr)
 	{
+		const test = testData[expr];
 		const parsed = parser.parse(expr);
-		nodeAssert(parsed, testData[expr]);
+		if (test.ast)
+		{
+			nodeAssert(parsed, test.ast);
+		}
+
+		player.initState();
+		const sceneState = player.state.scenes[exprSceneID];
+
+		if (test.initialSceneState)
+		{
+			for (const prop in test.initialSceneState)
+			{
+				sceneState[prop] = test.initialSceneState[prop];	
+			}
+		}
+
+		player.setCurrentScene(exprSceneID);
+		const result = yield player.processNode(parsed);
+		assert.strictEqual(result, test.value);
 	}
 
 	for (const expr in testData)
 	{
-		it(`should evaluate '${expr}'`, function()
+		it(`should evaluate '${expr}'`, function*()
 		{
-			testExpr(expr);
+			yield testExpr(expr);
 		});
 	}
 });
