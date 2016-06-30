@@ -1,6 +1,6 @@
 {
   "name": "etholow",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "tools to create interactive fiction and text adventures",
   "bin": {
     "etholow": "./bin/etholow.js"
@@ -11,7 +11,7 @@
     "view_coverage": "open coverage/lcov-report/index.html",
     "upload_coverage": "cat coverage/lcov.info | coveralls",
     "test": "npm run mocha && npm run eslint",
-    "packageList": "bash -c \"tar -tf $(npm pack)\"",
+    "package_list": "bash -c \"tar -tf $(npm pack)\"",
     "start": "etholow play test/games/basic"
   },
   "main": "index.js",
