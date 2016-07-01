@@ -109,6 +109,46 @@ const testData = {
 		},
 		value: false,
 	},
+	'true && false': {
+		value: false,
+	},
+	'false && true': {
+		value: false,
+	},
+	'true || false': {
+		value: true,
+	},
+	'false || true': {
+		value: true,
+	},
+	'scene.true && scene.false': {
+		initialSceneState: {
+			true: true,
+			false: false,
+		},
+		value: false,
+	},
+	'scene.false && scene.true': {
+		initialSceneState: {
+			true: true,
+			false: false,
+		},
+		value: false,
+	},
+	'scene.true || scene.false': {
+		initialSceneState: {
+			true: true,
+			false: false,
+		},
+		value: true,
+	},
+	'scene.false || scene.true': {
+		initialSceneState: {
+			true: true,
+			false: false,
+		},
+		value: true,
+	},
 };
 
 function nodeAssert(actual, expected, skipAssert = false)

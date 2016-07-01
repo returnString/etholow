@@ -101,17 +101,25 @@ StateLiteral = value:(string / bool / integer)
 	});
 }
 
+// keep this up to date when adding operators with lower precedence
+StateBinaryLowest = StateBinaryLogical
+
+StateBinaryLogical = first:StateBinaryEq _ rest:(("&&" / "||") _ StateBinaryEq)+
+{
+	return createNode('stateBinaryOp', binaryOpData(first, rest));
+} / StateBinaryEq
+
+StateBinaryEq = first:StateBinaryAdd _ rest:(("==") _ StateBinaryAdd)+
+{
+	return createNode('stateBinaryOp', binaryOpData(first, rest));
+} / StateBinaryAdd
+
 StateBinaryAdd = first:StateBinaryMul _ rest:(("+" / "-") _ StateBinaryMul)+
 {
 	return createNode('stateBinaryOp', binaryOpData(first, rest));
 } / StateBinaryMul
 
-StateBinaryMul = first:StateBinaryEq _ rest:(("*" / "/") _ StateBinaryEq)+
-{
-	return createNode('stateBinaryOp', binaryOpData(first, rest));
-} / StateBinaryEq
-
-StateBinaryEq = first:StateUnaryOp _ rest:(("==") _ StateUnaryOp)+
+StateBinaryMul = first:StateUnaryOp _ rest:(("*" / "/") _ StateUnaryOp)+
 {
 	return createNode('stateBinaryOp', binaryOpData(first, rest));
 } / StateUnaryOp
@@ -126,7 +134,7 @@ StateUnaryOp = op:"!" _ arg:StateBinaryPrimary
 
 StateBinaryPrimary = StateLiteral
 	/ StateProperty
-	/ "(" _ expr:StateBinaryAdd _ ")" { return expr; }
+	/ "(" _ expr:StateBinaryLowest _ ")" { return expr; }
 
 StateAssignment = prop:StateProperty _ "=" _ rhs:StateExpression
 {
@@ -136,7 +144,7 @@ StateAssignment = prop:StateProperty _ "=" _ rhs:StateExpression
 	});
 }
 
-StateExpression = StateAssignment / StateBinaryAdd / StateLiteral / StateProperty
+StateExpression = StateAssignment / StateBinaryLowest / StateLiteral / StateProperty
 StateBlock = "{" _ n? _ exprs:(_ StateExpression n?)* _ "}"
 {
 	return createNode('stateBlock', {
