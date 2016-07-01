@@ -29,42 +29,6 @@ describe('Scene parser', function()
 				yield parser.init();
 			});
 
-			it('should parse a basic cast', function()
-			{
-				const parsed = parser.parseConfig(
-`_: "Narrator"
-person1: "Person One"
-`);
-				assert.deepEqual(parsed, {
-					_: 'Narrator',
-					person1: 'Person One',
-				});
-			});
-
-			it('should parse a config entry with an array', function()
-			{
-				const parsed = parser.parseConfig(
-`option1: "this is a string"
-option2: [ "value1", "value2" ]
-`);
-				assert.deepEqual(parsed, {
-					option1: 'this is a string',
-					option2: [ 'value1', 'value2' ],
-				});
-			});
-
-			it('should parse a config entry with nested arrays', function()
-			{
-				const parsed = parser.parseConfig(
-`option1: "this is a string"
-option2: [ "value1", "value2", [ "value3", [ "value4" ] ] ]
-`);
-				assert.deepEqual(parsed, {
-					option1: 'this is a string',
-					option2: [ 'value1', 'value2', [ 'value3', [ 'value4' ] ] ],
-				});
-			});
-
 			it('should throw an error when no cast is provided', function()
 			{
 				assert.throws(() => parser.parseGame([], null), err => err instanceof EtholowError && err.code === constants.error.castNotFound);
