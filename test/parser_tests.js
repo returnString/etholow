@@ -39,7 +39,7 @@ describe('Scene parser', function()
 				let testName = `should process scene "${test.scene}"`;
 				if (test.error)
 				{
-					testName += ` with error ${test.error}`;
+					testName += ` with error "${constants.errorNames[test.error]}"`;
 				}
 
 				it(testName, function()
@@ -70,7 +70,7 @@ describe('Scene parser', function()
 					{
 						assert.notEqual(caughtErr, null);
 						assert(caughtErr instanceof EtholowError);
-						assert.equal(caughtErr.code, test.error);
+						assert.equal(constants.errorNames[caughtErr.code], constants.errorNames[test.error]);
 						assert.equal(caughtErr.scene, test.scene);
 					}
 					else
