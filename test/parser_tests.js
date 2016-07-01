@@ -29,9 +29,14 @@ describe('Scene parser', function()
 				yield parser.init();
 			});
 
+			it('should throw an error when no config is provided', function()
+			{
+				assert.throws(() => parser.parseGame([], null), err => err instanceof EtholowError && err.code === constants.error.configNotFound);
+			});
+
 			it('should throw an error when no cast is provided', function()
 			{
-				assert.throws(() => parser.parseGame([], null), err => err instanceof EtholowError && err.code === constants.error.castNotFound);
+				assert.throws(() => parser.parseGame([], { }), err => err instanceof EtholowError && err.code === constants.error.castNotFound);
 			});
 
 			for (const test of config.scenes)
@@ -59,7 +64,7 @@ describe('Scene parser', function()
 					let parsedScenes, caughtErr;
 					try
 					{
-						parsedScenes = parser.parseGame(scenes, defaultCast);
+						parsedScenes = parser.parseGame(scenes, { cast: defaultCast });
 					}
 					catch (err)
 					{

@@ -1,3 +1,7 @@
 {
-	"startingScene": "scene1"
+	"startingScene": "scene1",
+	"cast": {
+		"person": "Some Dude",
+		"person2": "Another Dude"
+	}
 }
