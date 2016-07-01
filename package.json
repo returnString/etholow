@@ -8,9 +8,10 @@
   "scripts": {
     "mocha": "istanbul cover _mocha",
     "eslint": "eslint . --ignore-path .gitignore",
+    "check_security": "nsp check",
     "view_coverage": "open coverage/lcov-report/index.html",
     "upload_coverage": "cat coverage/lcov.info | coveralls",
-    "test": "npm run mocha && npm run eslint",
+    "test": "npm run mocha && npm run eslint && npm run check_security",
     "package_list": "bash -c \"tar -tf $(npm pack)\"",
     "start": "etholow play test/games/basic"
   },
@@ -30,7 +31,8 @@
     "eslint": "^2.13.0",
     "istanbul": "^0.4.4",
     "mocha": "^2.5.3",
-    "mocha-generators": "^1.2.0"
+    "mocha-generators": "^1.2.0",
+    "nsp": "^2.5.0"
   },
   "repository": {
     "type": "git",
