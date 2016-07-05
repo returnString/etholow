@@ -6,7 +6,7 @@
     "etholow": "./bin/etholow.js"
   },
   "scripts": {
-    "mocha": "istanbul cover _mocha",
+    "mocha": "istanbul cover node_modules/mocha/bin/_mocha",
     "eslint": "eslint . --ignore-path .gitignore",
     "check_security": "nsp check",
     "view_coverage": "open coverage/lcov-report/index.html",
