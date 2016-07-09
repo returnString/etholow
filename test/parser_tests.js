@@ -86,5 +86,5 @@ describe('Scene parser', function()
 	}
 
 	runTests('no options specified', {});
-	runTests('stripped debug info', { stripDebugInfo: true });
+	runTests('retain debug info', { retainDebugInfo: true });
 });
