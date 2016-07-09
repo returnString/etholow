@@ -8,6 +8,7 @@
 		"coverage/": true,
 		"**/*.log": true,
 		"**/*.tgz": true,
-		"**/compiled.json": true
+		"**/compiled.json": true,
+		"**/*_generated.js": true
 	}
 }
