@@ -14,16 +14,32 @@ else
 	}
 }
 
+const utils = require('./lib/utils');
+
 module.exports = {
 	Player: require('./lib/player'),
 	Parser: require('./lib/parser'),
 	EtholowError: require('./lib/error'),
 	Game: require('./lib/game'),
 
-	ReadlineInterface: require('./lib/interfaces/readline_interface'),
-	WebInterface: require('./lib/interfaces/web_interface'),
-	
-	webLoader: require('./lib/web_loader'),
 
 	constants: require('./lib/constants'),
 };
+
+if (process.browser)
+{
+	const browserExports = {
+		WebInterface: require('./lib/interfaces/web_interface'),
+		webLoader: require('./lib/web_loader'),
+	};
+
+	utils.merge(module.exports, browserExports);
+}
+else
+{
+	const nodeOnlyExports = {
+		ReadlineInterface: require('./lib/interfaces/readline_interface'),
+	};
+
+	utils.merge(module.exports, nodeOnlyExports);
+}
