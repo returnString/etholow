@@ -2,7 +2,7 @@
 'use strict';
 
 const co = require('co');
-const { Game } = require('../');
+const { Game, ReadlineInterface } = require('../');
 const path = require('path');
 
 const args = process.argv.slice(2);
@@ -35,7 +35,7 @@ const actions = {
 	play: function*()
 	{
 		const game = yield loadGame(1);
-		yield game.run();
+		yield game.run(new ReadlineInterface());
 	},
 	export: function*()
 	{

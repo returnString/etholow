@@ -5,6 +5,7 @@ const pegjs = require('pegjs');
 const fs = require('fs');
 const assert = require('assert');
 const { Player } = require('../');
+const TestInterface = require('./test_interface');
 
 const testData = {
 	'1 + 1': {
@@ -172,7 +173,7 @@ function nodeAssert(actual, expected, skipAssert = false)
 describe('expression parsing', function()
 {
 	const exprSceneID = 'exprScene';
-	let parser, player = new Player({ [exprSceneID]: {} }, exprSceneID, {});
+	let parser, player = new Player(new TestInterface(), { [exprSceneID]: {} }, exprSceneID, {});
 	before(function*()
 	{
 		const grammarData = yield fs.readFileAsync(`${__dirname}/../grammars/scene.pegjs`, 'utf8');

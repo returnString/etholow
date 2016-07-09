@@ -2,22 +2,14 @@
 
 const config = require('./test_setup')();
 const { Game, constants, EtholowError } = require('../');
+const TestInterface = require('./test_interface');
 const path = require('path');
 const assert = require('assert');
 
 function *runStrategy(game, strategy, playerOptions)
 {
-	let readLineCalls = 0;
-
 	const options = {
-		readLineCallback: () =>
-		{
-			const answer = strategy[readLineCalls++];
-			assert(answer, `No answer provided for attempt ${readLineCalls}`);
-			return answer;
-		},
 		lineDelay: 0,
-		suppressOutput: true,
 	};
 
 	for (const prop in playerOptions)
@@ -25,8 +17,9 @@ function *runStrategy(game, strategy, playerOptions)
 		options[prop] = playerOptions[prop];
 	}
 
-	yield game.run(options);
-	assert.equal(readLineCalls, strategy.length);
+	const testInterface = new TestInterface(strategy);
+	yield game.run(testInterface, options);
+	assert.equal(testInterface.answerRequests, strategy.length);
 }
 
 describe('game player', function()
@@ -37,17 +30,19 @@ describe('game player', function()
 		describe(`playing '${gameName}'`, function()
 		{
 			const gameDir = path.join(__dirname, 'games', gameName);
-			let rawGame, compiledGame;
+			let rawGame, compiledGame, inMemoryGame;
 			before(function*()
 			{
 				rawGame = new Game();
 				compiledGame = new Game();
+				inMemoryGame = new Game();
 
 				if (!gameData.expectedError)
 				{
 					yield rawGame.loadDir(gameDir);
 					yield rawGame.saveJson(path.join(gameDir, 'compiled.json'));
 					yield compiledGame.loadJson(path.join(gameDir, 'compiled.json'));
+					inMemoryGame.loadData(rawGame.copyData());
 				}
 			});
 
@@ -59,7 +54,7 @@ describe('game player', function()
 					try
 					{
 						yield rawGame.loadDir(gameDir);
-						yield rawGame.run();
+						yield rawGame.run(new TestInterface());
 					}
 					catch (err)
 					{
@@ -87,6 +82,11 @@ describe('game player', function()
 						it('from the compiled json', function*()
 						{
 							yield runStrategy(compiledGame, strategy);
+						});
+
+						it('from an in-memory copy of the data', function*()
+						{
+							yield runStrategy(inMemoryGame, strategy);
 						});
 					});
 				}
