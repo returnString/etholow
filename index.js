@@ -1,10 +1,17 @@
 'use strict';
 
-const bluebird = require('bluebird');
-
-for (const module of [ require('fs') ])
+if (process.browser)
 {
-	bluebird.promisifyAll(module);
+	require('babel-polyfill');
+}
+else
+{
+	const bluebird = require('bluebird');
+
+	for (const module of [ require('fs') ])
+	{
+		bluebird.promisifyAll(module);
+	}
 }
 
 module.exports = {
@@ -15,6 +22,8 @@ module.exports = {
 
 	ReadlineInterface: require('./lib/interfaces/readline_interface'),
 	WebInterface: require('./lib/interfaces/web_interface'),
+	
+	webLoader: require('./lib/web_loader'),
 
 	constants: require('./lib/constants'),
 };

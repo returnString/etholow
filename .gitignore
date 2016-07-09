@@ -4,3 +4,4 @@ coverage/
 *.tgz
 compiled.json
 *_generated.js
+etholow_browser.js
