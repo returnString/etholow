@@ -17,7 +17,7 @@
     "build_parser": "pegjs grammars/scene.pegjs lib/scene_parser_generated.js",
     "build_browser": "browserify index.js -s etholow --debug | babel --presets es2015 -o etholow_browser.js",
     "build": "npm run build_parser && npm run build_browser",
-    "prepublish": "npm t",
+    "prepublish": "in-publish && npm t || not-in-publish",
     "postpublish": "git push --follow-tags"
   },
   "main": "index.js",
@@ -29,6 +29,7 @@
   "dependencies": {
     "bluebird": "^3.4.1",
     "co": "^4.6.0",
+    "in-publish": "^2.0.0",
     "pegjs": "^0.9.0"
   },
   "devDependencies": {
