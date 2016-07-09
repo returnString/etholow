@@ -1,6 +1,6 @@
 {
   "name": "etholow",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "description": "tools to create interactive fiction and text adventures",
   "bin": {
     "etholow": "./bin/etholow.js"
