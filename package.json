@@ -16,7 +16,8 @@
     "start": "etholow play test/games/basic",
     "build_parser": "pegjs grammars/scene.pegjs lib/scene_parser_generated.js",
     "build_browser": "browserify index.js -s etholow --debug | babel --presets es2015 -o etholow_browser.js",
-    "build": "npm run build_parser"
+    "build": "npm run build_parser",
+    "postpublish": "git push --follow-tags"
   },
   "main": "index.js",
   "author": {
