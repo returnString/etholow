@@ -13,7 +13,8 @@ module.exports = {
 	EtholowError: require('./lib/error'),
 	Game: require('./lib/game'),
 
-	ReadlineInterface: require('./lib/readline_interface'),
+	ReadlineInterface: require('./lib/interfaces/readline_interface'),
+	WebInterface: require('./lib/interfaces/web_interface'),
 
 	constants: require('./lib/constants'),
 };
