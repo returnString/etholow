@@ -24,11 +24,6 @@ describe('Scene parser', function()
 		const parser = new Parser(parserOptions);
 		describe(`parser options '${name}'`, function()
 		{
-			before(function*()
-			{
-				yield parser.init();
-			});
-
 			it('should throw an error when no config is provided', function()
 			{
 				assert.throws(() => parser.parseGame([], null), err => err instanceof EtholowError && err.code === constants.error.configNotFound);

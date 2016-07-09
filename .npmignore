@@ -1,6 +1,7 @@
 test/
 .vscode/
 coverage/
+grammars/
 .eslintrc
 .travis.yml
 *.tgz
