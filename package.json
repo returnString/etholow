@@ -12,11 +12,11 @@
     "view_coverage": "open coverage/lcov-report/index.html",
     "upload_coverage": "cat coverage/lcov.info | coveralls",
     "test": "npm run build && npm run mocha && npm run eslint && npm run check_security",
-    "package_list": "bash -c \"tar -tf $(npm pack)\"",
+    "package_list": "npm run build && bash -c \"tar -tf etholow-$(npm view etholow version).tgz\"",
     "start": "etholow play test/games/basic",
     "build_parser": "pegjs grammars/scene.pegjs lib/scene_parser_generated.js",
     "build_browser": "browserify index.js -d -s etholow -o etholow_browser.js -p [ minifyify --map etholow_browser.js.map --output etholow_browser.js.map ] -t [ babelify --presets es2015 ]",
-    "build": "npm run build_parser && npm run build_browser",
+    "build": "npm run build_parser && npm run build_browser && npm pack",
     "prepublish": "in-publish && npm t || not-in-publish",
     "postpublish": "git push --follow-tags"
   },
