@@ -1,5 +1,7 @@
 'use strict';
 
+/* global process */
+
 if (process.browser)
 {
 	require('babel-polyfill');
@@ -21,16 +23,14 @@ module.exports = {
 	Parser: require('./lib/parser'),
 	EtholowError: require('./lib/error'),
 	Game: require('./lib/game'),
-
-
 	constants: require('./lib/constants'),
 };
 
 if (process.browser)
 {
 	const browserExports = {
-		WebInterface: require('./lib/interfaces/web_interface'),
-		webLoader: require('./lib/web_loader'),
+		WebInterface: require('./lib/web/web_interface'),
+		WebLoader: require('./lib/web/web_loader'),
 	};
 
 	utils.merge(module.exports, browserExports);
@@ -38,7 +38,7 @@ if (process.browser)
 else
 {
 	const nodeOnlyExports = {
-		ReadlineInterface: require('./lib/interfaces/readline_interface'),
+		ReadlineInterface: require('./lib/node/readline_interface'),
 	};
 
 	utils.merge(module.exports, nodeOnlyExports);
