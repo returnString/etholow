@@ -10,6 +10,6 @@
 		"**/*.tgz": true,
 		"**/compiled.json": true,
 		"**/*_generated.js": true,
-		"**/etholow_browser.js": true
+		"**/etholow_browser.js*": true
 	}
 }

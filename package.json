@@ -15,7 +15,7 @@
     "package_list": "bash -c \"tar -tf $(npm pack)\"",
     "start": "etholow play test/games/basic",
     "build_parser": "pegjs grammars/scene.pegjs lib/scene_parser_generated.js",
-    "build_browser": "browserify index.js -s etholow --debug | babel --presets es2015 -o etholow_browser.js",
+    "build_browser": "browserify index.js -d -s etholow -o etholow_browser.js -p [ minifyify --map etholow_browser.js.map --output etholow_browser.js.map ] -t [ babelify --presets es2015 ]",
     "build": "npm run build_parser && npm run build_browser",
     "prepublish": "in-publish && npm t || not-in-publish",
     "postpublish": "git push --follow-tags"
@@ -33,13 +33,14 @@
     "pegjs": "^0.9.0"
   },
   "devDependencies": {
-    "babel-cli": "^6.10.1",
     "babel-polyfill": "^6.9.1",
     "babel-preset-es2015": "^6.9.0",
+    "babelify": "^7.3.0",
     "browserify": "^13.0.1",
     "coveralls": "^2.11.9",
     "eslint": "^2.13.0",
     "istanbul": "^0.4.4",
+    "minifyify": "^7.3.3",
     "mocha": "^2.5.3",
     "mocha-generators": "^1.2.0",
     "nsp": "^2.5.0"
