@@ -4,5 +4,6 @@ coverage/
 grammars/
 .eslintrc
 .travis.yml
+appveyor.yml
 *.tgz
 compiled.json
