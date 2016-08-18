@@ -35,7 +35,7 @@ const actions = {
 	play: function*()
 	{
 		const game = yield loadGame(1);
-		yield game.run(new ReadlineInterface());
+		yield game.run(new ReadlineInterface(), game.data.config.playerOptions);
 	},
 	export: function*()
 	{
