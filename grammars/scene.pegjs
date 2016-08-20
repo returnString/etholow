@@ -31,10 +31,10 @@ Block = "#" _ id:rawBasicString _ n entries:BlockEntry* end:BlockEnd
 }
 
 BlockEntry = BlockEntryN
-BlockEntryN = entry:(Line / StateBlock) n? { return entry; }
+BlockEntryN = entry:(Line / StateBlock) _ n? { return entry; }
 
 BlockEnd = ChoiceList / BlockEndN
-BlockEndN = entry:(Goto) n? { return entry; }
+BlockEndN = entry:(Goto) _ n? { return entry; }
 
 LinePrefix = name:rawBasicString _ ":" { return { name } }
 Line = prefix:LinePrefix? _ line:string
@@ -45,7 +45,7 @@ Line = prefix:LinePrefix? _ line:string
 	});
 }
 
-ChoiceList = list:(Choice n?)+
+ChoiceList = list:(Choice _ n?)+
 {
 	return createNode('choiceList', {
 		choices: list.map(e => e[0]),
