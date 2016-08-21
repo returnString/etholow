@@ -41,6 +41,15 @@ module.exports = () =>
 					succeed5: [ 1, 1, 1, 1, 1, 6 ],
 				},
 			},
+			{
+				scene: 'nested_blocks',
+				strategies: {
+					l3o1: [ 1, 1, 1 ],
+					l3o2: [ 1, 1, 2 ],
+					l2o2: [ 1, 2 ],
+					l1o2: [ 2 ],
+				},
+			},
 			{ scene: 'goto_scene', extraScenes: [ 'blank_scene' ] },
 			{ scene: 'block_not_found', error: constants.error.blockNotFound },
 			{ scene: 'cast_not_found', error: constants.error.castNotFound },

@@ -1,0 +1,11 @@
+# start
+> "level 1, option 1" => [
+	"this is a line"
+	> "level 2, option 1" => [
+		"another line"
+		> "level 3, option 1" => exit
+		> "level 3, option 2" => exit
+	]
+	> "level 2, option 2" => exit
+]
+> "level 1, option 2" => exit

@@ -77,8 +77,9 @@ describe('Scene parser', function()
 					{
 						assert.ifError(caughtErr);
 						const scene = parsedScenes[test.scene];
+						const normalise = (str) => str.split('\n').map(l => l.trim()).join('\n');
 						const recreatedText = parser.recreateText(scene);
-						assert.equal(scenes[test.scene], recreatedText);
+						assert.equal(normalise(recreatedText), normalise(scenes[test.scene]));
 					}
 				});
 			}

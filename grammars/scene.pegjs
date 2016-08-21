@@ -17,23 +17,35 @@
 	}
 }
 
-File = list:(Block n*)+
+File = list:(NamedBlock n*)+
 {
 	return list.map(e => e[0]);
 }
 
-Block = "#" _ id:rawBasicString _ n entries:BlockEntry* end:BlockEnd
+BlockEntries = entries:BlockEntry* end:BlockEnd
+{
+	return entries.concat([ end ]);
+}
+
+AnonBlock = _ n? _ "[" _ n? _ entries:BlockEntries _ n? _ "]"
 {
 	return createNode('block', {
-		id,
-		entries: entries.concat([ end ]),
+		entries,
 	});
 }
 
-BlockEntry = BlockEntryN
+NamedBlock = "#" _ id:rawBasicString _ n entries:BlockEntries
+{
+	return createNode('block', {
+		id,
+		entries,
+	});
+}
+
+BlockEntry = _ ret:BlockEntryN { return ret; }
 BlockEntryN = entry:(Line / StateBlock) _ n? { return entry; }
 
-BlockEnd = ChoiceList / BlockEndN
+BlockEnd = _ ret:(ChoiceList / BlockEndN) { return ret; }
 BlockEndN = entry:(Goto) _ n? { return entry; }
 
 LinePrefix = name:rawBasicString _ ":" { return { name } }
@@ -60,7 +72,7 @@ ChoiceConditional = "?" _ expr:StateExpression
 }
 
 ChoicePrefix = ">>" / ">"
-Choice = prefix:ChoicePrefix _ desc:string _ target:Goto _ cond:ChoiceConditional?
+Choice = prefix:ChoicePrefix _ desc:string _ target:Goto _ cond:ChoiceConditional? n?
 {
 	return createNode('choice', {
 		prefix,
@@ -70,7 +82,7 @@ Choice = prefix:ChoicePrefix _ desc:string _ target:Goto _ cond:ChoiceConditiona
 	});
 }
 
-Goto = "=>" _ target:(GotoScene/GotoBlock)
+Goto = "=>" _ target:(GotoScene/GotoBlock/AnonBlock)
 {
 	return target;
 }
