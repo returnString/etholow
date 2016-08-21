@@ -59,9 +59,11 @@ ChoiceConditional = "?" _ expr:StateExpression
 	});
 }
 
-Choice = ">" _ desc:string _ target:Goto _ cond:ChoiceConditional?
+ChoicePrefix = ">>" / ">"
+Choice = prefix:ChoicePrefix _ desc:string _ target:Goto _ cond:ChoiceConditional?
 {
 	return createNode('choice', {
+		prefix,
 		desc,
 		target,
 		cond,

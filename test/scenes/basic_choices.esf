@@ -1,6 +1,7 @@
 # start
 > "option 1" => option1
 > "option 2" => option2
+>> "speech option 1" => option1
 
 # option1
 => exit
