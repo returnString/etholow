@@ -122,7 +122,17 @@ const testData = {
 	'false || true': {
 		value: true,
 	},
+	'true && true && true': {
+		value: true,
+	},
 	'scene.true && scene.false': {
+		initialSceneState: {
+			true: true,
+			false: false,
+		},
+		value: false,
+	},
+	'true && scene.true && scene.false': {
 		initialSceneState: {
 			true: true,
 			false: false,

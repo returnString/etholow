@@ -13,7 +13,14 @@
 
 	function binaryOpData(first, rest)
 	{
-		return rest.reduce((memo, curr) => { return { op: curr[0], lhs: memo, rhs: curr[2] }; }, first)
+		return rest.reduce((memo, curr) =>
+		{
+			return {
+				op: curr[1],
+				lhs: memo === first ? memo : createNode('stateBinaryOp', memo),
+				rhs: curr[3],
+			};
+		}, first)
 	}
 }
 
@@ -118,22 +125,22 @@ StateLiteral = value:(string / bool / integer)
 // keep this up to date when adding operators with lower precedence
 StateBinaryLowest = StateBinaryLogical
 
-StateBinaryLogical = first:StateBinaryEq _ rest:(("&&" / "||") _ StateBinaryEq)+
+StateBinaryLogical = first:StateBinaryEq _ rest:(_ ("&&" / "||") _ StateBinaryEq)+
 {
 	return createNode('stateBinaryOp', binaryOpData(first, rest));
 } / StateBinaryEq
 
-StateBinaryEq = first:StateBinaryAdd _ rest:(("==") _ StateBinaryAdd)+
+StateBinaryEq = first:StateBinaryAdd _ rest:(_ ("==") _ StateBinaryAdd)+
 {
 	return createNode('stateBinaryOp', binaryOpData(first, rest));
 } / StateBinaryAdd
 
-StateBinaryAdd = first:StateBinaryMul _ rest:(("+" / "-") _ StateBinaryMul)+
+StateBinaryAdd = first:StateBinaryMul _ rest:(_ ("+" / "-") _ StateBinaryMul)+
 {
 	return createNode('stateBinaryOp', binaryOpData(first, rest));
 } / StateBinaryMul
 
-StateBinaryMul = first:StateUnaryOp _ rest:(("*" / "/") _ StateUnaryOp)+
+StateBinaryMul = first:StateUnaryOp _ rest:(_ ("*" / "/") _ StateUnaryOp)+
 {
 	return createNode('stateBinaryOp', binaryOpData(first, rest));
 } / StateUnaryOp
